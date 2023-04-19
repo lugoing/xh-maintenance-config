@@ -62,7 +62,8 @@ pipeline {
                         }
                         sh runScript
                     } else {
-                        def out = bat script: "docker ps -a | find /i \"${service_name}\"", returnStdout: true
+                        def out = bat (script: "docker ps -a | find /i \"${service_name}\"", returnStdout: true)
+                        echo out.toString()
                         if (out.toString().trim().contains(service_name)) {
                             echo '空的啊'
                         } else {
