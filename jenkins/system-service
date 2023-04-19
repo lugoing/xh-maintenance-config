@@ -53,7 +53,7 @@ pipeline {
                     if (isUnix()) {
                         //判断服务是否已存在
                         def out = sh script: "docker ps -a | grep -w ${service_name}", returnStdout: true
-                        if (out == '') {
+                        if (out.toString().trim().contains(service_name)) {
                             echo '空的啊'
                         } else {
                             echo '不是空的啊啊啊啊'
@@ -63,7 +63,7 @@ pipeline {
                         sh runScript
                     } else {
                         def out = bat script: "docker ps -a | find /i \"${service_name}\"", returnStdout: true
-                        if (out.trim() == '') {
+                        if (out.toString().trim().contains(service_name)) {
                             echo '空的啊'
                         } else {
                             echo '不是空的啊啊啊啊'
