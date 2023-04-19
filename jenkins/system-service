@@ -52,7 +52,7 @@ pipeline {
                             " -d ${mirror_name}"
                     if (isUnix()) {
                         //判断服务是否已存在
-                        def out = sh script: 'docker ps -a | grep -w ${service_name}', returnStdout: true
+                        def out = sh script: "docker ps -a | grep -w ${service_name}", returnStdout: true
                         if (out == '') {
                             echo '空的啊'
                         } else {
@@ -62,7 +62,7 @@ pipeline {
                         }
                         sh runScript
                     } else {
-                        def out = bat script: 'docker ps -a | find /i "${service_name}"', returnStdout: true
+                        def out = bat script: "docker ps -a | find /i \"${service_name}\"", returnStdout: true
                         if (out.trim() == '') {
                             echo '空的啊'
                         } else {
