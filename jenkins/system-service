@@ -30,7 +30,7 @@ pipeline {
         stage("spring-boot:build-image") {
             steps {
                 script {
-                    def runScript = "mvn install && mvn spring-boot:build-image -f ${project_name}/pom.xml"
+                    def runScript = "mvn spring-boot:build-image -f ${project_name}/pom.xml"
                     if (isUnix()) {
                         sh runScript
                     } else {
