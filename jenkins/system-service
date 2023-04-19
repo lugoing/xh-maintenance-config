@@ -15,8 +15,8 @@ pipeline {
         service_name = "xh-admin-system-service"
         mirror_name = "${service_name}:latest"
         git_project_branch = "main"
-        outer_port = "8000"
-        inner_port = "8000"
+        outer_port = "9001"
+        inner_port = "2000"
         NACOS_SERVER_ADDR = "localhost:8848"
     }
 
@@ -43,34 +43,30 @@ pipeline {
         stage("deploy service") {
             steps {
                 script {
-                    // run脚本
+                    // docker run脚本
                     def runScript = "docker run " +
-                            " --restart always " +
                             " --name ${service_name} " +
-                            " -p ${outer_port}:${inner_port} " +
+//                            " -p ${outer_port}:${inner_port} " +
+                            " --restart=always " +
+                            " --net=host " +
                             " -e NACOS_SERVER_ADDR=\"${NACOS_SERVER_ADDR}\" " +
+                            " -e PORT=\"${outer_port}\" " +
                             " -d ${mirror_name}"
                     if (isUnix()) {
-                        //判断服务是否已存在
-                        def out = sh script: "docker ps -a | grep -w ${service_name}", returnStdout: true
-                        if (out.toString().trim().contains(service_name)) {
-                            echo '空的啊'
-                        } else {
-                            echo '不是空的啊啊啊啊'
-                            bat "docker stop ${service_name}"
-                            bat "docker rm ${service_name}"
+                        try {
+                            sh "docker stop ${service_name}"
+                            sh "docker rm ${service_name}"
+                        } catch (Exception e) {
+                            echo '无容器可删'
                         }
                         sh runScript
                     } else {
-//                        def out = bat (script: "docker ps -a | find /i \"${service_name}\"", returnStdout: true)
-//                        echo out.toString()
-//                        if (out.toString().trim().contains(service_name)) {
-//                            echo '空的啊'
-//                        } else {
-//                            echo '不是空的啊啊啊啊'
-//                            bat "docker stop ${service_name}"
-//                            bat "docker rm ${service_name}"
-//                        }
+                        try {
+                            bat "docker stop ${service_name}"
+                            bat "docker rm ${service_name}"
+                        } catch (Exception e) {
+                            echo '无容器可删'
+                        }
                         bat runScript
                     }
                 }
