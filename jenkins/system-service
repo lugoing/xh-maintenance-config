@@ -12,7 +12,7 @@ pipeline {
         cred_id = "github"
         git_project_url = "https://github.com/Alixhan/xh-admin-backend.git"
         project_name = "system/service"
-        service_name = "xh-system-service"
+        service_name = "xh-admin-system-service"
         mirror_name = "${service_name}:latest"
         git_project_branch = "main"
         outer_port = "8000"
@@ -62,15 +62,15 @@ pipeline {
                         }
                         sh runScript
                     } else {
-                        def out = bat (script: "docker ps -a | find /i \"${service_name}\"", returnStdout: true)
-                        echo out.toString()
-                        if (out.toString().trim().contains(service_name)) {
-                            echo '空的啊'
-                        } else {
-                            echo '不是空的啊啊啊啊'
-                            bat "docker stop ${service_name}"
-                            bat "docker rm ${service_name}"
-                        }
+//                        def out = bat (script: "docker ps -a | find /i \"${service_name}\"", returnStdout: true)
+//                        echo out.toString()
+//                        if (out.toString().trim().contains(service_name)) {
+//                            echo '空的啊'
+//                        } else {
+//                            echo '不是空的啊啊啊啊'
+//                            bat "docker stop ${service_name}"
+//                            bat "docker rm ${service_name}"
+//                        }
                         bat runScript
                     }
                 }
