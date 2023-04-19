@@ -1,0 +1,94 @@
+#!groovy
+pipeline {
+    agent any
+    //环境变量
+    tools {
+        jdk 'jdk8_341'
+        maven 'maven3.8.6'
+    }
+
+    //常量参数
+    environment {
+        cred_id = "github"
+        git_project_url = "https://github.com/Alixhan/xh-admin-backend.git"
+        project_name = "system/service"
+        service_name = "xh-system-service"
+        mirror_name = "${service_name}:latest"
+        git_project_branch = "main"
+        outer_port = "8000"
+        inner_port = "8000"
+        NACOS_SERVER = "http://192.168.1.119:1001/eureka/"
+    }
+
+    stages {
+        stage("fetch code") {
+            steps {
+//                git credentialsId:cred_id, url:git_project_url, branch:git_project_branch
+                git url: git_project_url, branch: git_project_branch
+            }
+        }
+        stage("spring-boot:build-image") {
+            steps {
+                sh "mvn spring-boot:build-image -f ${project_name}/pom.xml"
+            }
+        }
+        stage("build docker image") {
+            steps {
+                script {
+                    //linux环境
+                    if (isUnix()) {
+                        sh "mvn spring-boot:build-image -f ${project_name}/pom.xml"
+                    } else {
+                        def out = bat script: 'docker ps -a | find /i "${service_name}"', returnStdout: true
+                        if (out.trim() === '') {
+                            echo '空的啊'
+                        } else {
+                            echo '不是空的啊啊啊啊'
+                            bat "docker stop ${service_name}"
+                            bat "docker rm ${service_name}"
+                        }
+                    }
+                }
+            }
+        }
+        stage("deploy") {
+            steps {
+                script {
+                    // run脚本
+                    def runScript = "docker run " +
+                            " --restart always " +
+                            " --name ${service_name} " +
+                            " -p ${outer_port}:${inner_port} " +
+                            " -e SERVER_NAME=\"${service_name}\" " +
+                            " -e SERVER_PORT=\"${inner_port}\" " +
+                            " -e ACTIVE_PROFILE=\"${profile}\" " +
+                            " -e JAVA_OPTS=\"${java_opts}\" " +
+                            " -e ADDITIONAL_EUREKA_SERVER_LIST=\"${eureka_server_list}\" " +
+                            " -d ${mirror_name}"
+                    if (isUnix()) {
+                        //判断服务是否已存在
+                        def out = sh script: 'docker ps -a | grep -w ${service_name}', returnStdout: true
+                        if (out.trim() === '') {
+                            echo '空的啊'
+                        } else {
+                            echo '不是空的啊啊啊啊'
+                            bat "docker stop ${service_name}"
+                            bat "docker rm ${service_name}"
+                        }
+                        sh runScript
+                    } else {
+                        def out = bat script: 'docker ps -a | find /i "${service_name}"', returnStdout: true
+                        if (out.trim() === '') {
+                            echo '空的啊'
+                        } else {
+                            echo '不是空的啊啊啊啊'
+                            bat "docker stop ${service_name}"
+                            bat "docker rm ${service_name}"
+                        }
+                        bat runScript
+                    }
+                }
+            }
+        }
+    }
+}
