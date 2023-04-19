@@ -29,7 +29,15 @@ pipeline {
         }
         stage("spring-boot:build-image") {
             steps {
-                sh "mvn spring-boot:build-image -f ${project_name}/pom.xml"
+                script {
+                    def runScript = "mvn spring-boot:build-image -f ${project_name}/pom.xml"
+                    if (isUnix()) {
+                        sh runScript
+                    } else {
+                        bat runScript
+                    }
+                }
+
             }
         }
         stage("deploy service") {
