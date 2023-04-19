@@ -32,26 +32,7 @@ pipeline {
                 sh "mvn spring-boot:build-image -f ${project_name}/pom.xml"
             }
         }
-        stage("build docker image") {
-            steps {
-                script {
-                    //linux环境
-                    if (isUnix()) {
-                        sh "mvn spring-boot:build-image -f ${project_name}/pom.xml"
-                    } else {
-                        def out = bat script: 'docker ps -a | find /i "${service_name}"', returnStdout: true
-                        if (out.trim() === '') {
-                            echo '空的啊'
-                        } else {
-                            echo '不是空的啊啊啊啊'
-                            bat "docker stop ${service_name}"
-                            bat "docker rm ${service_name}"
-                        }
-                    }
-                }
-            }
-        }
-        stage("deploy") {
+        stage("deploy service") {
             steps {
                 script {
                     // run脚本
@@ -64,7 +45,7 @@ pipeline {
                     if (isUnix()) {
                         //判断服务是否已存在
                         def out = sh script: 'docker ps -a | grep -w ${service_name}', returnStdout: true
-                        if (out.trim() === '') {
+                        if (out == '') {
                             echo '空的啊'
                         } else {
                             echo '不是空的啊啊啊啊'
@@ -74,7 +55,7 @@ pipeline {
                         sh runScript
                     } else {
                         def out = bat script: 'docker ps -a | find /i "${service_name}"', returnStdout: true
-                        if (out.trim() === '') {
+                        if (out.trim() == '') {
                             echo '空的啊'
                         } else {
                             echo '不是空的啊啊啊啊'
