@@ -11,7 +11,7 @@ pipeline {
     environment {
         cred_id = "gitee"
         project_name = "xh-admin-backend"
-        service_name = ${project_name}
+        service_name = "${project_name}"
         image = "${service_name}:latest"
         git_project_url = "https://gitee.com/sun-xiaohan/${project_name}.git"
         git_project_branch = "main"
