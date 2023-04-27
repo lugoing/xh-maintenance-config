@@ -19,3 +19,5 @@ selenium-debug.log
 *.sln
 lib
 package-lock.json
+/nacos/minio/
+/nacos/nacos-mount/

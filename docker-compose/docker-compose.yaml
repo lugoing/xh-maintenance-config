@@ -1,0 +1,69 @@
+version: "3.9"
+services:
+  redis:
+    image: redis:6-alpine
+    container_name: redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - /data/redis/data:/data
+      - /data/redis/redis.conf:/etc/redis/redis.conf
+    restart: unless-stopped
+    command: redis-server --appendonly yes
+  mysql:
+    image: mysql:debian
+    container_name: mysql8
+    ports:
+      - "3306:3306"
+    volumes:
+      - /data/mysql/my.cnf:/etc/my.cnf
+      - /data/mysql/conf.d:/etc/mysql/conf.d
+      - /data/mysql/data:/var/lib/mysql
+    environment:
+      - MYSQL_ROOT_PASSWORD="1qaz@WSX#EDC"
+    restart: always
+  minio:
+    container_name: minio
+    image: quay.io/minio/minio:latest
+    hostname: minio
+    ports:
+      - "9000:9000"
+      - "9001:9001"
+    volumes:
+      - ./minio/data:/data
+    command: server /data --console-address ":9001"
+    environment:
+      MINIO_ROOT_USER: root
+      MINIO_ROOT_PASSWORD: "1qaz@WSX#EDC"
+    restart: always
+  nacos:
+    image: nacos/nacos-server:v2.2.2-slim
+    container_name: nacos-server
+    environment:
+      - PREFER_HOST_MODE=hostname
+      - MODE=standalone
+      - NACOS_AUTH_ENABLE=true
+      - NACOS_AUTH_IDENTITY_KEY=xh
+      - NACOS_AUTH_IDENTITY_VALUE=xh666
+      - NACOS_AUTH_TOKEN=dlfkgjer78234uskl23ioufsjlk34r9028rf0wu24078woekrjelwriufio
+    volumes:
+      - ./nacos/logs:/home/nacos/logs
+    ports:
+      - "8848:8848"
+      - "9848:9848"
+    restart: always
+  jenkins:
+    image: jenkins/jenkins:lts-jdk17
+    container_name: jenkins
+    user: root
+    ports:
+      - "8080:8080"
+    volumes:
+      - /data/jenkins_home:/var/jenkins_home
+      - /etc/localtime:/etc/localtime
+      - /var/run/docker.sock:/var/run/docker.sock
+      - /usr/bin/docker:/bin/docker
+      - /usr/local/bin/docker-compose:/usr/local/bin/docker-compose
+      - /usr/bin/docker-compose:/usr/bin/docker-compose
+    restart: always
+    privileged: true

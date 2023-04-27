@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
+-- nacos初始化sql仅用于单机测试
 /******************************************/
 /*   表名称 = config_info                  */
 /******************************************/
