@@ -18,7 +18,7 @@ pipeline {
         outer_port = "2000"
         profile = "production"
         Dockerfile = '''
-            FROM nginx:alpine3.17
+            FROM nginx:1.24.0-alpine-slim
             COPY dist /usr/share/nginx/html
         '''
     }
