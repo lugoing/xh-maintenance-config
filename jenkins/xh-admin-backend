@@ -59,6 +59,7 @@ pipeline {
                         inner_port = '6003'
                     }
                     if(dir_name == 'mvn-install') {
+                        sh "mvn clean -DskipTests=true"
                         sh "mvn install -DskipTests=true"
                         return "mvn install 成功咯"
                     }
