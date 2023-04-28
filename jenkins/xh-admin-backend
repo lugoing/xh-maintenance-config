@@ -9,7 +9,7 @@ pipeline {
 
     //常量参数
     environment {
-        cred_id = "git"
+        cred_id = "gitee"
         group_name="baic/projectK"
         project_name = "baic-project-backstage"
         git_project_url = "https://gitee.com/sun-xiaohan/xh-admin-backend.git"
