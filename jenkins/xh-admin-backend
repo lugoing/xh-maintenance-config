@@ -19,8 +19,8 @@ pipeline {
         NACOS_SERVER_ADDR="10.0.4.3:8848"
         NACOS_NAMESPACE="productioin"
         NACOS_GROUP="xh-admin"
-        NACOS_USERNAME="production"
-        NACOS_PASSWROD="production"
+        NACOS_USERNAME="nacos"
+        NACOS_PASSWROD="nacos"
         outer_port = ""
         inner_port = ""
         Dockerfile = '''
