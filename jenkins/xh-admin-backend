@@ -37,7 +37,7 @@ pipeline {
             # 复制jar文件到路径
             ADD *.jar /app/app.jar
             # 启动命令，同时设置jvm内存
-            ENTRYPOINT ["java","-jar", "-Xms256m", "-Xmx256m", "app.jar"]
+            ENTRYPOINT ["java","-jar", "app.jar"]
         '''
     }
 
