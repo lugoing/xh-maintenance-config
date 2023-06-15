@@ -76,13 +76,17 @@ pipeline {
         }
         stage("deploy") {
             steps{
-                sh '''
-                    if !(test -z "$(docker ps -a | grep -w $service_name )") then
-                        docker stop ${service_name}
-                        docker rm ${service_name}
-                    fi
-                '''
-                sh "docker run " +
+                script {
+                    if(dir_name == 'mvn-install') {
+                        return "mvn install 不用deploy"
+                    }
+                    sh '''
+                        if !(test -z "$(docker ps -a | grep -w $service_name )") then
+                            docker stop ${service_name}
+                            docker rm ${service_name}
+                        fi
+                    '''
+                    sh "docker run " +
                         " --network=xh-admin " +
                         " --name ${service_name} " +
                         " -p ${outer_port}:${inner_port} " +
@@ -93,6 +97,7 @@ pipeline {
                         " -e NACOS_PASSWROD=${NACOS_PASSWROD} " +
                         " -e SERVER_PORT=${inner_port} " +
                         " -d ${mirror_name} "
+                }
             }
         }
     }
