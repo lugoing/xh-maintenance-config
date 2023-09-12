@@ -26,6 +26,8 @@ pipeline {
         Dockerfile = '''
             # 基础镜像
             FROM openjdk:21-ea-17-jdk-slim
+            # 安装支持的字体
+            RUN yum install fontconfig -y
             # author
             MAINTAINER sxh
             #设置时区
