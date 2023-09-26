@@ -18,7 +18,7 @@ pipeline {
         mirror_name = "${service_name}:latest"
         NACOS_SERVER_ADDR="10.0.4.3:8848"
         NACOS_NAMESPACE="production"
-        NACOS_GROUP="xh-admin"
+        NACOS_GROUP="dacheng"
         NACOS_USERNAME="nacos"
         NACOS_PASSWROD="nacos"
         outer_port = ""
