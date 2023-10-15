@@ -90,17 +90,27 @@ pipeline {
                             docker rm ${service_name}
                         fi
                     '''
-                    sh "docker run " +
-                        " --network=xh-admin " +
-                        " --name ${service_name} " +
-                        " -p ${outer_port}:${inner_port} " +
-                        " -e NACOS_SERVER_ADDR=${NACOS_SERVER_ADDR} " +
-                        " -e NACOS_NAMESPACE=${NACOS_NAMESPACE} " +
-                        " -e NACOS_GROUP=${NACOS_GROUP} " +
-                        " -e NACOS_USERNAME=${NACOS_USERNAME} " +
-                        " -e NACOS_PASSWROD=${NACOS_PASSWROD} " +
-                        " -e SERVER_PORT=${inner_port} " +
-                        " -d ${mirror_name} "
+
+                    def scriptStr = "docker run " +
+                            " --network=xh-admin " +
+                            " --name ${service_name} "
+
+                    if(dir_name == 'wechat') {
+//                        添加上xxl-job执行器端口映射
+                        scriptStr = scriptStr +
+                                " -p 9999:9999 "
+                    }
+
+                    scriptStr = scriptStr +
+                            " -p ${outer_port}:${inner_port} " +
+                            " -e NACOS_SERVER_ADDR=${NACOS_SERVER_ADDR} " +
+                            " -e NACOS_NAMESPACE=${NACOS_NAMESPACE} " +
+                            " -e NACOS_GROUP=${NACOS_GROUP} " +
+                            " -e NACOS_USERNAME=${NACOS_USERNAME} " +
+                            " -e NACOS_PASSWROD=${NACOS_PASSWROD} " +
+                            " -e SERVER_PORT=${inner_port} " +
+                            " -d ${mirror_name} "
+                    sh scriptStr
                 }
             }
         }
